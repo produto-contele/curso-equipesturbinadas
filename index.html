@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curso Equipes Externas Turbinadas · Contele Teams</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{
+  --primary-blue:#1b5ed8;
+  --primary-dark:#164ead;
+  --dark-bg:#222831;
+  --dark-hover:#31363f;
+  --bg-light:#f4f7fb;
+  --border-color:#e2e8f0;
+  --text-gray:#64748b;
+  --ink:#0f172a;
+  --ok:#10b981;
+  --warn:#f59e0b;
+  --err:#ef4444;
+  --sidebar-w:324px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg-light);color:var(--ink);width:100vw;height:100vh;overflow:hidden;display:flex}
+
+/* ===================== SIDEBAR ===================== */
+#sidebar{
+  width:var(--sidebar-w);height:100%;flex-shrink:0;
+  background:linear-gradient(180deg,var(--dark-bg) 0%,var(--dark-hover) 100%);
+  color:#fff;padding:22px 12px 16px;display:flex;flex-direction:column;
+  box-shadow:4px 0 25px rgba(0,0,0,.18);z-index:1000;
+}
+.sb-logo{width:146px;margin:0 auto 16px;display:block}
+.sb-label{
+  font-size:10px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;
+  color:#94a3b8;padding:0 8px 12px;border-bottom:1px solid rgba(255,255,255,.10);margin-bottom:12px;
+}
+.sb-list{list-style:none;flex:1;overflow-y:auto;padding-right:4px}
+.sb-list::-webkit-scrollbar{width:5px}
+.sb-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:4px}
+
+.sb-item{
+  padding:8px 11px;margin-bottom:2px;border-radius:8px;cursor:pointer;
+  font-size:12px;font-weight:600;color:#cbd5e1;display:flex;align-items:flex-start;gap:9px;
+  transition:background .18s,color .18s;line-height:1.35;
+}
+.sb-item:hover{background:rgba(255,255,255,.08);color:#fff}
+.sb-item.active{background:var(--primary-blue);color:#fff}
+.sb-item i.sb-ico{font-size:11px;width:16px;text-align:center;flex-shrink:0;margin-top:3px;opacity:.9}
+.sb-item .sb-txt{flex:1;min-width:0}
+
+/* módulos recolhíveis */
+.sb-group{margin-bottom:2px}
+.sb-mod{
+  width:100%;background:none;border:0;font-family:inherit;cursor:pointer;
+  padding:9px 11px;border-radius:8px;display:flex;align-items:center;gap:9px;
+  color:#e2e8f0;font-size:12px;font-weight:800;text-align:left;transition:background .18s;
+}
+.sb-mod:hover{background:rgba(255,255,255,.08)}
+.sb-group.contem-ativo > .sb-mod{color:#fff;background:rgba(27,94,216,.22)}
+.sb-mod .chev{font-size:9px;width:10px;flex-shrink:0;transition:transform .2s;opacity:.7}
+.sb-group.aberto .sb-mod .chev{transform:rotate(90deg)}
+.sb-mod .mod-ico{font-size:11px;width:16px;text-align:center;flex-shrink:0}
+.sb-mod .mod-nome{flex:1;min-width:0;line-height:1.3}
+.sb-mod .mod-qtd{
+  font-size:9.5px;font-weight:800;background:rgba(255,255,255,.12);border-radius:5px;
+  padding:2px 6px;flex-shrink:0;letter-spacing:.3px;
+}
+.sb-group.completo .mod-qtd{background:rgba(16,185,129,.28);color:#a7f3d0}
+.sb-sub{list-style:none;display:none;padding:2px 0 6px 10px;margin-left:10px;border-left:1px solid rgba(255,255,255,.10)}
+.sb-group.aberto .sb-sub{display:block}
+.sb-sub .sb-item{font-size:11.5px;font-weight:600;padding:7px 10px}
+.sb-sub .sb-n{
+  font-size:9.5px;font-weight:800;background:rgba(255,255,255,.12);border-radius:4px;
+  padding:2px 0;width:20px;text-align:center;flex-shrink:0;margin-top:1px;
+}
+.sb-sub .sb-item.active .sb-n{background:rgba(255,255,255,.26)}
+.sb-sub .sb-item.visto .sb-n{background:rgba(16,185,129,.28);color:#a7f3d0}
+.sb-sub .sb-check{font-size:9px;color:#34d399;margin-top:3px;flex-shrink:0;display:none}
+.sb-sub .sb-item.visto .sb-check{display:block}
+.sb-sep{font-size:9.5px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#64748b;padding:14px 11px 6px}
+
+.sb-foot{border-top:1px solid rgba(255,255,255,.10);padding-top:13px;margin-top:10px}
+.sb-score{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+.sb-score span:first-child{font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:#94a3b8}
+.sb-score b{font-size:14px;font-weight:800;color:#fff}
+.sb-bar{height:6px;background:rgba(255,255,255,.12);border-radius:4px;overflow:hidden}
+.sb-bar i{display:block;height:100%;width:0;border-radius:4px;transition:width .45s}
+.sb-bar.pontos i{background:linear-gradient(90deg,var(--primary-blue),#3b82f6)}
+.sb-bar.aulas i{background:linear-gradient(90deg,#059669,#34d399)}
+.sb-mode{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border-radius:8px;padding:9px 11px;font-size:11px;font-weight:700;color:#94a3b8}
+.sb-mode i{color:#60a5fa}
+.sb-switch{
+  width:100%;margin-top:11px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+  color:#cbd5e1;border-radius:9px;padding:9px;font-family:inherit;font-size:11px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .18s;
+}
+.sb-switch:hover{background:rgba(255,255,255,.15);color:#fff}
+
+/* ===================== ÁREA DE SLIDES ===================== */
+#stagewrap{flex:1;height:100%;position:relative;overflow:hidden;background-image:radial-gradient(#d3dde9 1px,transparent 1px);background-size:28px 28px}
+.topbar{position:absolute;top:0;left:0;width:100%;height:4px;background:rgba(15,23,42,.06);z-index:60}
+.topbar i{display:block;height:100%;background:var(--primary-blue);width:0;transition:width .35s}
+.slide{position:absolute;inset:0;padding:46px 54px 84px;opacity:0;visibility:hidden;transition:opacity .35s ease;display:flex;flex-direction:column}
+.slide.active{opacity:1;visibility:visible}
+.logo-mini{position:absolute;top:34px;right:52px;height:34px;z-index:40}
+
+.slide-head{margin-bottom:20px;padding-right:170px}
+.eyebrow{color:var(--primary-blue);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.tag{font-size:10.5px;font-weight:800;padding:4px 11px;border-radius:20px;text-transform:none;letter-spacing:0;display:inline-flex;gap:6px;align-items:center}
+.tag-purple{background:#f5f3ff;color:#7c3aed;border:1px solid #ddd6fe}
+.tag-green{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}
+.tag-star{background:#fffbeb;color:#b45309;border:1px solid #fde68a}
+.slide-head h2{font-size:27px;font-weight:800;letter-spacing:-.7px;color:#111827;margin-bottom:9px;line-height:1.2;max-width:1000px}
+.slide-head h2 span{color:var(--primary-blue)}
+.slide-head p{font-size:14.5px;color:#475569;line-height:1.6;max-width:900px}
+
+/* ===================== SLIDE DE VÍDEO ===================== */
+.video-stage{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.laptop{width:min(72%,900px);max-height:100%;display:flex;flex-direction:column;align-items:center}
+.laptop-lid{width:100%;background:#0b0b0d;padding:14px 14px 16px;border-radius:16px 16px 6px 6px;box-shadow:0 26px 60px rgba(15,23,42,.30),inset 0 0 0 2px #2c2c2e}
+.laptop-cam{width:5px;height:5px;border-radius:50%;background:#3f3f46;margin:0 auto 9px}
+.laptop-screen{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:6px;overflow:hidden}
+.laptop-screen iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.laptop-base{width:118%;height:15px;background:linear-gradient(180deg,#d5d9e0,#a9b0bb);border-radius:0 0 14px 14px;box-shadow:0 12px 26px rgba(15,23,42,.22);position:relative}
+.laptop-base::after{content:'';position:absolute;left:50%;top:0;transform:translateX(-50%);width:14%;height:5px;background:#8f96a3;border-radius:0 0 6px 6px}
+.video-note{margin-top:20px;font-size:13px;color:var(--text-gray);font-weight:600;display:flex;align-items:center;gap:9px;text-decoration:none;transition:color .18s}
+.video-note:hover{color:var(--primary-blue)}
+.video-note i{color:var(--err);font-size:16px}
+.yt-poster{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;cursor:pointer;background:#111827;overflow:hidden;display:block}
+.yt-poster img{width:100%;height:100%;object-fit:cover;display:block;opacity:.82;transition:opacity .25s,transform .35s}
+.yt-poster:hover img{opacity:1;transform:scale(1.02)}
+.yt-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:74px;height:52px;border-radius:14px;background:#ef4444;color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(0,0,0,.45);transition:transform .2s,background .2s}
+.yt-poster:hover .yt-play{background:#dc2626;transform:translate(-50%,-50%) scale(1.07)}
+.yt-hint{position:absolute;left:0;right:0;bottom:16px;text-align:center;color:#fff;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:.4px;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+.yt-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:#111827;color:#94a3b8;font-size:13px;font-weight:700;text-align:center;padding:24px}
+.yt-fallback i{font-size:34px;color:var(--err)}
+
+/* ===================== QUIZ ===================== */
+.quiz-wrap{flex:1;min-height:0;display:flex;flex-direction:column;gap:16px;overflow-y:auto;padding-right:8px}
+.quiz-wrap::-webkit-scrollbar{width:7px}
+.quiz-wrap::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:5px}
+.q-card{background:#fff;border:1px solid var(--border-color);border-radius:14px;padding:20px 22px;box-shadow:0 6px 18px rgba(15,23,42,.04)}
+.q-top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.q-idx{background:#eff6ff;color:var(--primary-blue);font-size:10.5px;font-weight:800;padding:4px 9px;border-radius:6px;letter-spacing:.6px;text-transform:uppercase;flex-shrink:0}
+.q-pts{margin-left:auto;font-size:11px;font-weight:800;color:var(--text-gray);flex-shrink:0}
+.q-card h4{font-size:16px;font-weight:700;color:var(--ink);line-height:1.4}
+.q-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.q-opt{display:flex;align-items:flex-start;gap:11px;text-align:left;background:#fff;border:1.5px solid var(--border-color);border-radius:10px;padding:12px 14px;font-family:inherit;font-size:13.5px;color:#334155;font-weight:500;cursor:pointer;transition:border-color .16s,background .16s,transform .16s}
+.q-opt:hover:not(:disabled){border-color:var(--primary-blue);background:#f8faff;transform:translateY(-1px)}
+.q-opt:disabled{cursor:default}
+.q-opt .letter{width:21px;height:21px;flex-shrink:0;border-radius:6px;background:#f1f5f9;color:#64748b;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.q-opt.right{border-color:var(--ok);background:#ecfdf5;color:#065f46;font-weight:600}
+.q-opt.right .letter{background:var(--ok);color:#fff}
+.q-opt.wrong{border-color:var(--err);background:#fef2f2;color:#991b1b}
+.q-opt.wrong .letter{background:var(--err);color:#fff}
+.q-fb{margin-top:13px;font-size:13px;line-height:1.55;padding:11px 14px;border-radius:9px;display:none}
+.q-fb.show{display:block}
+.q-fb.ok{background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46}
+.q-fb.no{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412}
+.q-fb b{font-weight:800}
+.quiz-result{background:var(--dark-bg);color:#fff;border-radius:14px;padding:20px 24px;display:flex;align-items:center;gap:18px}
+.quiz-result i{font-size:26px;color:#60a5fa}
+.quiz-result h4{font-size:16px;font-weight:800;margin-bottom:3px}
+.quiz-result p{font-size:13px;color:#cbd5e1;line-height:1.5}
+.quiz-result .score{margin-left:auto;text-align:right;flex-shrink:0}
+.quiz-result .score b{display:block;font-size:26px;font-weight:800;line-height:1}
+.quiz-result .score span{font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#94a3b8}
+
+/* ===================== GRADE DE MÓDULOS ===================== */
+.mod-grid{flex:1;min-height:0;overflow-y:auto;padding-right:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:13px;align-content:start}
+.mod-grid::-webkit-scrollbar{width:7px}
+.mod-grid::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:5px}
+.mod-card{background:#fff;border:1px solid var(--border-color);border-radius:13px;padding:17px 18px;display:flex;flex-direction:column;gap:9px;cursor:pointer;text-align:left;font-family:inherit;transition:transform .16s,box-shadow .16s,border-color .16s}
+.mod-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(15,23,42,.09);border-color:var(--primary-blue)}
+.mod-card .mc-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex-shrink:0}
+.mod-card .mc-kick{font-size:9.5px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;color:#94a3b8}
+.mod-card h3{font-size:14.5px;font-weight:800;color:var(--ink);letter-spacing:-.3px;line-height:1.3;flex:1}
+.mod-card .mc-qtd{font-size:11px;font-weight:700;color:var(--text-gray);display:flex;align-items:center;gap:7px}
+.mod-card .mc-qtd .done{color:#047857;font-weight:800}
+
+/* ===================== ESCOLHA DE CAMINHO ===================== */
+.path-grid{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.path-card{background:#fff;border:1px solid var(--border-color);border-radius:16px;padding:32px 30px;display:flex;flex-direction:column;gap:14px;cursor:pointer;text-align:left;font-family:inherit;transition:transform .18s,box-shadow .18s,border-color .18s}
+.path-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(15,23,42,.10);border-color:var(--primary-blue)}
+.path-card.escolhido{border-color:var(--primary-blue);box-shadow:0 0 0 3px #dbeafe}
+.path-ico{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff;flex-shrink:0}
+.path-card h3{font-size:21px;font-weight:800;letter-spacing:-.5px;color:var(--ink)}
+.path-card > p{font-size:14px;color:#475569;line-height:1.6}
+.path-list{list-style:none;display:flex;flex-direction:column;gap:9px;flex:1;margin-top:4px}
+.path-list li{font-size:13.5px;line-height:1.5;display:flex;gap:10px;align-items:flex-start;color:#334155}
+.path-list li i{font-size:12px;margin-top:3px;flex-shrink:0}
+.path-list .yes i{color:var(--ok)}
+.path-list .no{color:#94a3b8}
+.path-list .no i{color:#cbd5e1}
+.path-note{font-size:12px;color:#b45309;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:9px 12px;line-height:1.45}
+.path-cta{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:9px;padding:13px;border-radius:10px;font-size:14px;font-weight:800}
+.path-a .path-cta{background:var(--bg-light);color:var(--ink);border:1px solid var(--border-color)}
+.path-b .path-cta{background:var(--primary-blue);color:#fff}
+
+/* ===================== CAPA ===================== */
+.slide-cover{background:#fff;align-items:center;justify-content:center;text-align:center;padding:60px}
+.slide-cover img{width:300px;margin-bottom:34px}
+.slide-cover h1{font-size:50px;font-weight:800;letter-spacing:-1.7px;line-height:1.12;max-width:900px;margin:0 auto 16px}
+.slide-cover h1 span{color:var(--primary-blue)}
+.slide-cover .sub{font-size:18px;color:#475569;max-width:680px;line-height:1.6;margin-bottom:34px}
+.cover-steps{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}
+.cover-steps span{background:var(--bg-light);border:1px solid var(--border-color);border-radius:20px;padding:7px 15px;font-size:12.5px;font-weight:700;color:#475569}
+
+/* ===================== CERTIFICADO ===================== */
+.cert-shell{flex:1;min-height:0;display:flex;gap:26px;align-items:stretch}
+.cert-form{width:330px;flex-shrink:0;background:#fff;border:1px solid var(--border-color);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:14px}
+.cert-form h4{font-size:16px;font-weight:800}
+.cert-form label{font-size:11px;font-weight:800;letter-spacing:.9px;text-transform:uppercase;color:var(--text-gray);display:block;margin-bottom:6px}
+.cert-form input{width:100%;padding:11px 13px;border:1.5px solid var(--border-color);border-radius:9px;font-family:inherit;font-size:14px;color:var(--ink)}
+.cert-form input:focus{outline:none;border-color:var(--primary-blue)}
+.cert-hint{font-size:11px;color:var(--text-gray);line-height:1.4;margin-top:6px;font-weight:500}
+.cert-btn{background:var(--primary-blue);color:#fff;border:0;border-radius:9px;padding:13px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:background .18s}
+.cert-btn:hover{background:var(--primary-dark)}
+.cert-btn.ghost{background:#fff;color:var(--primary-blue);border:1.5px solid var(--primary-blue)}
+.cert-btn.ghost:hover{background:#eff6ff}
+.cert-stat{background:var(--bg-light);border:1px solid var(--border-color);border-radius:10px;padding:13px 15px}
+.cert-stat span{font-size:10.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--text-gray)}
+.cert-stat b{display:block;font-size:22px;font-weight:800;margin-top:3px}
+#certificado{flex:1;min-width:0;background:#fff;border:1px solid var(--border-color);border-radius:14px;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:44px 54px}
+#certificado::before{content:'';position:absolute;inset:12px;border:2px solid #dbeafe;border-radius:8px;pointer-events:none}
+#certificado::after{content:'';position:absolute;top:0;left:0;width:100%;height:7px;background:linear-gradient(90deg,var(--primary-blue),#60a5fa)}
+.cert-logo{width:170px;margin-bottom:24px;position:relative}
+.cert-kicker{font-size:11.5px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--primary-blue);margin-bottom:12px}
+.cert-title{font-size:28px;font-weight:800;letter-spacing:-1px;margin-bottom:26px;max-width:640px;line-height:1.2}
+.cert-to{font-size:12.5px;color:var(--text-gray);font-weight:600;margin-bottom:8px}
+.cert-name{font-size:34px;font-weight:800;letter-spacing:-1px;color:var(--primary-blue);border-bottom:2px solid var(--border-color);padding:0 40px 12px;margin-bottom:22px}
+.cert-text{font-size:14px;color:#475569;line-height:1.7;max-width:640px;margin-bottom:26px}
+.cert-text b{color:var(--ink)}
+.cert-meta{display:flex;gap:44px;margin-top:6px}
+.cert-meta div span{font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:#94a3b8;display:block;margin-bottom:4px}
+.cert-meta div b{font-size:15px;font-weight:800}
+.cert-empty{color:#94a3b8;font-size:14px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.cert-empty i{font-size:40px;color:#cbd5e1}
+
+/* ===================== CONTROLES ===================== */
+.controls{position:absolute;bottom:26px;right:52px;display:flex;align-items:center;gap:14px;z-index:50}
+.counter{font-size:12px;font-weight:700;color:var(--text-gray);letter-spacing:.3px}
+.nav-btn{width:42px;height:42px;border-radius:50%;border:1px solid var(--border-color);background:#fff;cursor:pointer;color:var(--ink);font-size:14px;box-shadow:0 4px 12px rgba(15,23,42,.06);transition:all .18s}
+.nav-btn:hover:not(:disabled){background:var(--primary-blue);color:#fff;border-color:var(--primary-blue);transform:translateY(-2px)}
+.nav-btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+
+@media print{
+  body{overflow:visible;height:auto;display:block;background:#fff}
+  #sidebar,.topbar,.controls,.logo-mini,.cert-form,.slide:not(.active){display:none!important}
+  #stagewrap{width:100%;height:auto;background:none;overflow:visible}
+  .slide.active{position:static;opacity:1;visibility:visible;padding:0;display:block}
+  .slide.active .slide-head{display:none}
+  .cert-shell{display:block}
+  #certificado{border:0;padding:60px;min-height:90vh}
+}
+</style>
+</head>
+<body>
+
+<aside id="sidebar">
+  <img src="https://i.ibb.co/BHjm6dp2/logo-teams-espelhado.png" alt="Contele Teams" class="sb-logo">
+  <div class="sb-label">Equipes Externas Turbinadas</div>
+  <ul class="sb-list" id="sbList"></ul>
+  <div class="sb-foot">
+    <div id="sbScoreBox">
+      <div class="sb-score"><span>Pontuação</span><b id="sbScore">0 / 0</b></div>
+      <div class="sb-bar pontos"><i id="sbBar"></i></div>
+    </div>
+    <div class="sb-score" style="margin-top:11px"><span>Aulas assistidas</span><b id="sbAulas">0 / 0</b></div>
+    <div class="sb-bar aulas"><i id="sbBarAulas"></i></div>
+    <div class="sb-mode" id="sbMode" style="display:none;margin-top:11px"><i class="fa-solid fa-eye"></i> Modo visual · sem avaliação</div>
+    <button class="sb-switch" id="sbSwitch" type="button"><i class="fa-solid fa-shuffle"></i> Trocar de caminho</button>
+  </div>
+</aside>
+
+<main id="stagewrap">
+  <div class="topbar"><i id="topBar"></i></div>
+
+  <!-- ============ CAPA ============ -->
+  <section class="slide slide-cover active" data-sec="cover">
+    <img src="https://i.ibb.co/BHjm6dp2/logo-teams-espelhado.png" alt="Contele Teams">
+    <h1>Curso Equipes Externas <span>Turbinadas</span></h1>
+    <p class="sub">Da liderança à gestão por dados: um programa completo para quem comanda times que trabalham fora do escritório.</p>
+    <div class="cover-steps">
+      <span id="coverMods">0 módulos</span><span id="coverAulas">0 aulas</span><span>Questionário final</span><span>Certificado de conclusão</span>
+    </div>
+  </section>
+
+  <!-- ============ ESCOLHA DE CAMINHO ============ -->
+  <section class="slide" data-sec="escolha">
+    <img src="https://i.ibb.co/BHjm6dp2/logo-teams-espelhado.png" class="logo-mini">
+    <div class="slide-head">
+      <div class="eyebrow">— Antes de começar</div>
+      <h2>Como você quer fazer este <span>curso</span>?</h2>
+      <p>Escolha um caminho. Dá para trocar quando quiser, pelo botão no fim do menu à esquerda.</p>
+    </div>
+    <div class="path-grid">
+      <button class="path-card path-a" type="button" data-modo="visual">
+        <div class="path-ico" style="background:#64748b"><i class="fa-solid fa-eye"></i></div>
+        <h3>Só assistir</h3>
+        <p>Percorra os módulos no seu ritmo, sem avaliação no final.</p>
+        <ul class="path-list">
+          <li class="yes"><i class="fa-solid fa-check"></i><span><b id="pAulas1">0</b> aulas em <b id="pMods1">0</b> módulos</span></li>
+          <li class="yes"><i class="fa-solid fa-check"></i><span>Marcação das aulas já assistidas</span></li>
+          <li class="no"><i class="fa-solid fa-minus"></i><span>Sem questionário</span></li>
+          <li class="no"><i class="fa-solid fa-minus"></i><span>Sem certificado</span></li>
+        </ul>
+        <span class="path-cta"><i class="fa-solid fa-play"></i> Começar pelas aulas</span>
+      </button>
+      <button class="path-card path-b" type="button" data-modo="completo">
+        <div class="path-ico" style="background:var(--primary-blue)"><i class="fa-solid fa-award"></i></div>
+        <h3>Curso completo</h3>
+        <p>As mesmas aulas, com questionário ao final e emissão do certificado.</p>
+        <ul class="path-list">
+          <li class="yes"><i class="fa-solid fa-check"></i><span><b id="pAulas2">0</b> aulas em <b id="pMods2">0</b> módulos</span></li>
+          <li class="yes"><i class="fa-solid fa-check"></i><span>Questionário de <b id="pQ">0</b> perguntas, valendo <b id="pPontos">0</b> pontos</span></li>
+          <li class="yes"><i class="fa-solid fa-check"></i><span>Certificado com o seu nome, pronto para imprimir ou salvar em PDF</span></li>
+        </ul>
+        <div class="path-note"><i class="fa-solid fa-circle-info"></i> Para emitir o certificado é preciso acertar ao menos <b id="pMin">70</b>% dos pontos.</div>
+        <span class="path-cta"><i class="fa-solid fa-award"></i> Fazer e emitir certificado</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ GRADE DE MÓDULOS ============ -->
+  <section class="slide" data-sec="modulos">
+    <img src="https://i.ibb.co/BHjm6dp2/logo-teams-espelhado.png" class="logo-mini">
+    <div class="slide-head">
+      <div class="eyebrow">— Grade do curso</div>
+      <h2>Os módulos de <span>Equipes Externas Turbinadas</span></h2>
+      <p>Clique em um módulo para ir à primeira aula dele. O menu à esquerda abre cada módulo e lista as aulas.</p>
+    </div>
+    <div class="mod-grid" id="modGrid"></div>
+  </section>
+
+  <!-- as aulas são geradas aqui pelo script, a partir da lista MODULOS -->
+  <div id="ancoraAulas" hidden></div>
+
+  <!-- ============ QUESTIONÁRIO ============ -->
+  <section class="slide slide-quiz" data-sec="quiz" data-mode="completo">
+    <img src="https://i.ibb.co/BHjm6dp2/logo-teams-espelhado.png" class="logo-mini">
+    <div class="slide-head">
+      <div class="eyebrow">— Avaliação final <span class="tag tag-green"><i class="fa-solid fa-circle-check"></i> Questionário</span></div>
+      <h2>Teste o que você <span>aprendeu</span></h2>
+      <p>Escolha uma alternativa por pergunta. A resposta certa soma pontos na hora.</p>
+    </div>
+    <div class="quiz-wrap" data-quiz="final"></div>
+  </section>
+
+  <!-- ============ CERTIFICADO ============ -->
+  <section class="slide" data-sec="cert" data-mode="completo">
+    <img src="https://i.ibb.co/BHjm6dp2/logo-teams-espelhado.png" class="logo-mini">
+    <div class="slide-head">
+      <div class="eyebrow">— Conclusão <span class="tag tag-star"><i class="fa-solid fa-award"></i> Certificado</span></div>
+      <h2>Emita seu <span>certificado</span></h2>
+      <p>Aproveitamento mínimo de 70% dos pontos. Preencha seus dados e gere o documento.</p>
+    </div>
+    <div class="cert-shell">
+      <div class="cert-form">
+        <h4>Seus dados</h4>
+        <div>
+          <label for="cName">Nome completo</label>
+          <input type="text" id="cName" placeholder="Como deve constar no certificado">
+        </div>
+        <div>
+          <label for="cMail">E-mail</label>
+          <input type="email" id="cMail" placeholder="nome@empresa.com.br">
+          <p class="cert-hint">Não aparece no certificado. Fica registrado para o envio automático.</p>
+        </div>
+        <div>
+          <label for="cComp">Empresa</label>
+          <input type="text" id="cComp" placeholder="Opcional">
+        </div>
+        <div class="cert-stat"><span>Aproveitamento</span><b id="cPerc">0%</b></div>
+        <div class="cert-stat"><span>Pontos</span><b id="cPts">0 / 0</b></div>
+        <button class="cert-btn" id="cGen"><i class="fa-solid fa-award"></i> Gerar certificado</button>
+        <button class="cert-btn ghost" id="cPrint"><i class="fa-solid fa-print"></i> Imprimir / Salvar PDF</button>
+      </div>
+      <div id="certificado">
+        <div class="cert-empty"><i class="fa-solid fa-file-shield"></i>
+          Preencha seu nome e clique em <b>Gerar certificado</b></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="controls">
+    <span class="counter" id="counter">1 / 1</span>
+    <button class="nav-btn" id="prevBtn" aria-label="Slide anterior"><i class="fa-solid fa-chevron-left"></i></button>
+    <button class="nav-btn" id="nextBtn" aria-label="Próximo slide"><i class="fa-solid fa-chevron-right"></i></button>
+  </div>
+</main>
+
+<script>
+/* =========================================================
+   1. GRADE DO CURSO
+   Fonte única: módulos e aulas. Para incluir, remover,
+   reordenar, renomear um módulo ou trocar um link, mexa só
+   aqui — slides, índice, grade e contadores saem desta lista.
+   'link' aceita o endereço do YouTube em qualquer formato.
+   ========================================================= */
+const MODULOS = [
+  {id:'intro', kick:'Abertura', nome:'Introdução ao curso', icon:'fa-flag', cor:'#8b5cf6', aulas:[
+    {rot:'Introdução', titulo:'Introdução ao Curso Equipes Externas Turbinadas', link:'https://www.youtube.com/watch?v=762gY_97tjE'}
+  ]},
+  {id:'m1', kick:'Módulo 1', nome:'Liderança', icon:'fa-user-tie', cor:'#1b5ed8', aulas:[
+    {rot:'Aula 1', titulo:'Líder admirado ou temido, mas nunca um peso morto', link:'https://www.youtube.com/watch?v=nDimBY-JyLQ'},
+    {rot:'Aula 2', titulo:'Posição de líder', link:'https://www.youtube.com/watch?v=RQusGKWztTg'},
+    {rot:'Aula 3', titulo:'Liderando por Reforço positivo (R+)', link:'https://www.youtube.com/watch?v=pdVKl05TvkM'},
+    {rot:'Aula 4', titulo:'Meu chefe não me motiva, e daí?', link:'https://www.youtube.com/watch?v=wKzcqRkrRL8'},
+    {rot:'Aula 5', titulo:'Como um líder de equipe evolui', link:'https://www.youtube.com/watch?v=BIHTf_Rs--8'}
+  ]},
+  {id:'m2', kick:'Módulo 2', nome:'Montagem da equipe', icon:'fa-users-gear', cor:'#0ea5e9', aulas:[
+    {rot:'Aula 1', titulo:'A montagem da equipe turbinada', link:'https://www.youtube.com/watch?v=O149_d-tjvE'},
+    {rot:'Aula 2', titulo:'O avançado', link:'https://www.youtube.com/watch?v=FVJouPyprCQ'},
+    {rot:'Aula 3', titulo:'A retenção', link:'https://www.youtube.com/watch?v=H_9RqWPq4H4'},
+    {rot:'Aula 4', titulo:'A demissão', link:'https://www.youtube.com/watch?v=Qyb0cXnObOs'}
+  ]},
+  {id:'m3', kick:'Módulo 3', nome:'Remuneração e benefícios', icon:'fa-hand-holding-dollar', cor:'#10b981', aulas:[
+    {rot:'Aula 1', titulo:'Alinhamento de sonhos e expectativas', link:'https://www.youtube.com/watch?v=Tb4FZlqdyxQ'},
+    {rot:'Aula 2', titulo:'Defina as proporções fixo e variável', link:'https://www.youtube.com/watch?v=1_QGC7q1jA0'},
+    {rot:'Aula 3', titulo:'Defina benefícios que te tragam resultados', link:'https://www.youtube.com/watch?v=2W-PQYmUcfg'},
+    {rot:'Aula 4', titulo:'Pague por produtividade e resultado', link:'https://www.youtube.com/watch?v=P8LU0jUi7Ec'}
+  ]},
+  {id:'m4', kick:'Módulo 4', nome:'Pitch e mentoria', icon:'fa-comments', cor:'#f59e0b', aulas:[
+    {rot:'Aula 1', titulo:'Pitch que vende é obrigação do gestor', link:'https://www.youtube.com/watch?v=Qb7BycBX4kA'},
+    {rot:'Aula 2', titulo:'Faça o script da execução do Pitch', link:'https://www.youtube.com/watch?v=PXUErOHbuvc'},
+    {rot:'Aula 3', titulo:'Seja convencido pelo seu colaborador', link:'https://www.youtube.com/watch?v=eUXbNHw9iKI'},
+    {rot:'Aula 4', titulo:'Escolha os seus mentores e da sua equipe', link:'https://www.youtube.com/watch?v=L7ASDcGi8TM'},
+    {rot:'Aula 5', titulo:'Entrevista com Ciro Julien, da Julien Consultoria e Treinamentos', link:'https://www.youtube.com/watch?v=mFIOoNeJbmw'}
+  ]},
+  {id:'m5', kick:'Módulo 5', nome:'Comunicação com a equipe', icon:'fa-bullhorn', cor:'#ec4899', aulas:[
+    {rot:'Aula 1', titulo:'A primeira impressão é a que fica', link:'https://www.youtube.com/watch?v=6pAERo_pVQ4'},
+    {rot:'Aula 2', titulo:'Faça uma dinâmica com seus colaboradores', link:'https://www.youtube.com/watch?v=Xu1pbRYkiUM'},
+    {rot:'Aula 3', titulo:'Grave um vídeo como esse e multiplique na sua equipe', link:'https://www.youtube.com/watch?v=49oMk5vSMZs'},
+    {rot:'Aula 4', titulo:'Saiba dar luz aos números da sua empresa', link:'https://www.youtube.com/watch?v=55rdPXSmIv8'},
+    {rot:'Aula 5', titulo:'Modelo de Pitch de Vendas', link:'https://www.youtube.com/watch?v=7JS2RRIbl1Y'}
+  ]},
+  {id:'m6', kick:'Módulo 6', nome:'Mercado e leads', icon:'fa-chart-pie', cor:'#6366f1', aulas:[
+    {rot:'Aula 1', titulo:'Saiba o tamanho do seu mercado', link:'https://www.youtube.com/watch?v=hXGsOX7-WMA'},
+    {rot:'Aula 2', titulo:'As fontes de leads disponíveis', link:'https://www.youtube.com/watch?v=fhUO9xDoyoA'},
+    {rot:'Aula 3', titulo:'Como disponibilizar ao seu colaborador', link:'https://www.youtube.com/watch?v=OCzEG0aUoZY'}
+  ]},
+  {id:'m7', kick:'Módulo 7', nome:'Ponto, jornada e deslocamento', icon:'fa-clock', cor:'#ef4444', aulas:[
+    {rot:'Aula 1', titulo:'Controle de Ponto, Jornada e Deslocamento', link:'https://www.youtube.com/watch?v=w0yluNiYEmY'},
+    {rot:'Aula 2', titulo:'O primeiro e o último deslocamento', link:'https://www.youtube.com/watch?v=UH0qMFGtmKs'},
+    {rot:'Aula 3', titulo:'O controle do ponto', link:'https://www.youtube.com/watch?v=q6u7GH6eW3A'},
+    {rot:'Aula 4', titulo:'A dispensa do ponto pelo artigo 62', link:'https://www.youtube.com/watch?v=tW0LtImUjCc'},
+    {rot:'Aula 5', titulo:'O ponto por exceção', link:'https://www.youtube.com/watch?v=oecR8MDWYI0'},
+    {rot:'Aula 6', titulo:'A tecnologia para ajudar neste processo', link:'https://www.youtube.com/watch?v=fUX0Zgkz9Ck'}
+  ]},
+  {id:'m8', kick:'Módulo 8', nome:'Tecnologia na equipe externa', icon:'fa-mobile-screen-button', cor:'#14b8a6', aulas:[
+    {rot:'Aula 1', titulo:'Introdução', link:'https://www.youtube.com/watch?v=NOxUEyBPZF4'},
+    {rot:'Aula 2', titulo:'Como a tecnologia ajuda na disciplina', link:'https://www.youtube.com/watch?v=q_OXJIugjcA'},
+    {rot:'Aula 3', titulo:'Como a tecnologia ajuda no planejamento', link:'https://www.youtube.com/watch?v=2W0mk506Nc4'},
+    {rot:'Aula 4', titulo:'Como a tecnologia ajuda na agilidade', link:'https://www.youtube.com/watch?v=Zdz6lqsn4iE'},
+    {rot:'Aula 5', titulo:'Como a tecnologia ajuda na transformação digital', link:'https://www.youtube.com/watch?v=s4_5pMUKt6A'},
+    {rot:'Aula 6', titulo:'Como a tecnologia ajuda na medição dos resultados', link:'https://www.youtube.com/watch?v=cJR7ikDydaw'}
+  ]},
+  {id:'m9', kick:'Módulo 9', nome:'Gestão por dados e KPIs', icon:'fa-chart-simple', cor:'#0891b2', aulas:[
+    {rot:'Aula 1', titulo:'Conceito “data driven”', link:'https://www.youtube.com/watch?v=fUhfxVYEzTo'},
+    {rot:'Aula 2', titulo:'Defina seus KPIs', link:'https://www.youtube.com/watch?v=tPVHBMqncp0'},
+    {rot:'Aula 3', titulo:'Como medir os KPIs', link:'https://www.youtube.com/watch?v=p3Yv7gx9BLE'},
+    {rot:'Aula 4', titulo:'O que fazer com os KPIs', link:'https://www.youtube.com/watch?v=23XpTM_TBYo'},
+    {rot:'Aula 5', titulo:'Como definir os KPIs', link:'https://www.youtube.com/watch?v=eViWj_fp5B8'}
+  ]},
+  {id:'m10', kick:'Módulo 10', nome:'Produtividade e bem-estar', icon:'fa-heart-pulse', cor:'#84cc16', aulas:[
+    {rot:'Aula 1', titulo:'Como ter uma vida mais produtiva (convidado Christian Barbosa)', link:'https://www.youtube.com/watch?v=IF1xMS7XpWI'},
+    {rot:'Aula 2', titulo:'Como usar ferramentas tecnológicas para seu dia render mais', link:'https://www.youtube.com/watch?v=dbLIVMh67mo'},
+    {rot:'Aula 5', titulo:'Saúde e bem-estar do gestor', link:'https://www.youtube.com/watch?v=mcsx6TmGKxc'}
+  ]},
+  {id:'bonus', kick:'Bônus', nome:'Automatização de processos', icon:'fa-gift', cor:'#a855f7', aulas:[
+    {rot:'Bônus', titulo:'Automatização e melhoria de processos: por onde começar?', link:'https://www.youtube.com/watch?v=EjDKsDp0zlk'}
+  ]}
+];
+
+/* extrai o ID de um link do YouTube em qualquer formato */
+function ytId(v){
+  if(!v) return '';
+  v = v.trim();
+  if(!/[\/?=]/.test(v)) return v;
+  const m = v.match(/[?&]v=([\w-]{6,})/)
+        || v.match(/(?:youtu\.be|\/embed\/|\/shorts\/|\/live\/)\/?([\w-]{6,})/);
+  return m ? m[1] : '';
+}
+
+const TOTAL_AULAS = MODULOS.reduce((a,m)=>a+m.aulas.length,0);
+
+/* =========================================================
+   2. QUESTIONÁRIO FINAL  (correct = índice da alternativa certa)
+   Para criar questionários por módulo, basta acrescentar uma
+   chave com o id do módulo — ex.: QUIZZES['m1'] = [...] — que
+   um slide de questionário aparece ao fim daquele módulo.
+   ========================================================= */
+const QUIZZES = {
+  'final':[
+    {q:'Na liderança por R+, apresentada no Módulo 1, o que significa a sigla?',
+     opts:['Resultado rápido','Reforço positivo','Retenção de pessoas','Revisão de processos'],
+     correct:1, pts:10,
+     fb:'R+ é reforço positivo — liderar reconhecendo o comportamento desejado.'},
+    {q:'Segundo a primeira aula do Módulo 1, o que um líder nunca pode ser?',
+     opts:['Um líder exigente','Um líder admirado','Um peso morto','Um líder temido'],
+     correct:2, pts:10,
+     fb:'A aula admite o líder admirado e até o temido, mas nunca o peso morto.'},
+    {q:'Quais etapas do ciclo de vida da equipe o Módulo 2 percorre?',
+     opts:['Montagem, retenção e demissão','Apenas o recrutamento',
+           'Somente treinamento técnico','Apenas a avaliação de desempenho'],
+     correct:0, pts:10,
+     fb:'O módulo vai da montagem da equipe à retenção e, quando necessário, à demissão.'},
+    {q:'O que o Módulo 3 trata sobre remuneração?',
+     opts:['Somente o salário fixo','Proporção entre fixo e variável, benefícios e pagamento por produtividade',
+           'Apenas comissões sobre vendas','Somente a folha de pagamento'],
+     correct:1, pts:10,
+     fb:'O módulo cobre o alinhamento de expectativas, a proporção fixo/variável, os benefícios e o pagamento por produtividade e resultado.'},
+    {q:'Segundo o Módulo 4, criar um pitch que vende é obrigação de quem?',
+     opts:['Do time de marketing','Do cliente','De um consultor externo','Do gestor'],
+     correct:3, pts:10,
+     fb:'A aula é direta no título: pitch que vende é obrigação do gestor.'},
+    {q:'Quem é o entrevistado do Módulo 4?',
+     opts:['Ciro Julien, da Julien Consultoria e Treinamentos','Christian Barbosa',
+           'Marco Antonio','Nenhum, o módulo não tem entrevista'],
+     correct:0, pts:10,
+     fb:'A última aula do módulo é a entrevista com Ciro Julien, da Julien Consultoria e Treinamentos.'},
+    {q:'Qual recurso o Módulo 5 sugere para multiplicar uma mensagem dentro da equipe?',
+     opts:['Um comunicado por e-mail','Gravar um vídeo e repassá-lo à equipe',
+           'Um mural impresso na parede','Uma reunião a cada trimestre'],
+     correct:1, pts:10,
+     fb:'A aula propõe gravar um vídeo, como os do próprio curso, e multiplicá-lo na equipe.'},
+    {q:'Por onde o Módulo 6 orienta começar o trabalho de prospecção?',
+     opts:['Contratando mais vendedores','Comprando uma lista pronta de contatos',
+           'Reduzindo o preço do produto','Sabendo o tamanho do seu mercado'],
+     correct:3, pts:10,
+     fb:'A primeira aula é justamente saber o tamanho do mercado; só depois vêm as fontes de leads e a distribuição ao colaborador.'},
+    {q:'No módulo sobre ponto e jornada, qual artigo trata da dispensa do controle de ponto?',
+     opts:['Artigo 7º','Artigo 482','Artigo 62','Artigo 158'],
+     correct:2, pts:10,
+     fb:'O curso dedica uma aula inteira à dispensa do ponto pelo artigo 62.'},
+    {q:'Quais deslocamentos do dia ganham uma aula própria no Módulo 7?',
+     opts:['O primeiro e o último','Apenas os de longa distância',
+           'Somente os feitos fora do horário comercial','Nenhum — todos recebem o mesmo tratamento'],
+     correct:0, pts:10,
+     fb:'O primeiro e o último deslocamento são os que mais geram dúvida no cálculo da jornada.'},
+    {q:'Em quais frentes o Módulo 8 mostra que a tecnologia ajuda a equipe externa?',
+     opts:['Apenas no controle de ponto','Somente na comunicação interna',
+           'Disciplina, planejamento, agilidade, transformação digital e medição de resultados',
+           'Apenas na emissão de notas fiscais'],
+     correct:2, pts:10,
+     fb:'São cinco frentes: disciplina, planejamento, agilidade, transformação digital e medição dos resultados.'},
+    {q:'O que caracteriza uma gestão "data driven", tema do Módulo 9?',
+     opts:['Decidir pela experiência do gestor','Terceirizar as decisões para consultorias',
+           'Seguir o que a concorrência faz','Conduzir as decisões a partir de indicadores medidos'],
+     correct:3, pts:10,
+     fb:'O módulo parte do conceito data driven e segue para definir, medir e agir sobre os KPIs.'},
+    {q:'Quem é o convidado da aula sobre ter uma vida mais produtiva?',
+     opts:['Christian Barbosa','Ciro Julien','Marco Antonio','Leonardo Gazolli'],
+     correct:0, pts:10,
+     fb:'Christian Barbosa participa do Módulo 10; Ciro Julien é o entrevistado do Módulo 4.'},
+    {q:'Qual é o tema do conteúdo bônus do curso?',
+     opts:['Gestão de frota e combustível','Automatização e melhoria de processos',
+           'Contratação de estagiários','Marketing digital para equipes externas'],
+     correct:1, pts:10,
+     fb:'O bônus trata de automatização e melhoria de processos — por onde começar.'}
+  ]
+};
+
+const APROVACAO = 70; // % mínimo para emitir o certificado
+
+/* =========================================================
+   3. GERAÇÃO DOS SLIDES
+   ========================================================= */
+(function montarSlides(){
+  const ancora = document.getElementById('ancoraAulas');
+  let n = 0;
+  MODULOS.forEach(mod=>{
+    mod.aulas.forEach((a,j)=>{
+      n++;
+      const sec = document.createElement('section');
+      sec.className = 'slide slide-aula';
+      sec.dataset.sec  = mod.id+'-'+j;
+      sec.dataset.mod  = mod.id;
+      sec.dataset.name = a.titulo;
+      sec.innerHTML = `
+        <img src="https://i.ibb.co/BHjm6dp2/logo-teams-espelhado.png" class="logo-mini">
+        <div class="slide-head">
+          <div class="eyebrow">${mod.kick}${mod.aulas.length>1 ? ' · '+a.rot : ''}
+            <span class="tag tag-purple"><i class="fa-brands fa-youtube"></i> Vídeo ${n} de ${TOTAL_AULAS}</span></div>
+          <h2>${a.titulo}</h2>
+          <p>${mod.nome} — dê play na tela abaixo. A aula abre aqui mesmo.</p>
+        </div>
+        <div class="video-stage">
+          <div class="laptop">
+            <div class="laptop-lid">
+              <div class="laptop-cam"></div>
+              <div class="laptop-screen" data-yt="${ytId(a.link)}" data-aula="${mod.id}-${j}"></div>
+            </div>
+            <div class="laptop-base"></div>
+          </div>
+        </div>`;
+      ancora.parentNode.insertBefore(sec, ancora);
+    });
+
+    /* questionário do módulo, se houver perguntas cadastradas para ele */
+    if((QUIZZES[mod.id]||[]).length){
+      const qz = document.createElement('section');
+      qz.className = 'slide slide-quiz';
+      qz.dataset.sec = mod.id+'-quiz';
+      qz.dataset.mod = mod.id;
+      qz.dataset.name = 'Questionário';
+      qz.dataset.mode = 'completo';
+      qz.innerHTML = `
+        <img src="https://i.ibb.co/BHjm6dp2/logo-teams-espelhado.png" class="logo-mini">
+        <div class="slide-head">
+          <div class="eyebrow">${mod.kick} · ${mod.nome}
+            <span class="tag tag-green"><i class="fa-solid fa-circle-check"></i> Questionário</span></div>
+          <h2>Teste o que você <span>aprendeu</span></h2>
+          <p>Escolha uma alternativa por pergunta. A resposta certa soma pontos na hora.</p>
+        </div>
+        <div class="quiz-wrap" data-quiz="${mod.id}"></div>`;
+      ancora.parentNode.insertBefore(qz, ancora);
+    }
+  });
+})();
+
+/* =========================================================
+   4. MOTOR
+   ========================================================= */
+const slides   = [...document.querySelectorAll('.slide')];
+const sbList   = document.getElementById('sbList');
+const counter  = document.getElementById('counter');
+const prevBtn  = document.getElementById('prevBtn');
+const nextBtn  = document.getElementById('nextBtn');
+const topBar   = document.getElementById('topBar');
+let current = 0;
+const answered   = {};         // "mod-idx" -> pontos ganhos
+const assistidas = new Set();  // "mod-j" das aulas já abertas
+
+let modo = 'completo';
+let deck = slides.slice();
+let abertos = new Set();       // módulos expandidos no índice
+
+const secOf = i => deck[i].dataset.sec;
+const firstSlideOf = id => deck.findIndex(s => s.dataset.sec === id);
+const totalPts = () => Object.values(QUIZZES).flat().reduce((a,q)=>a+q.pts,0);
+const earnedPts = () => Object.values(answered).reduce((a,b)=>a+b,0);
+
+const FIXOS = [
+  {id:'cover',   label:'Capa',                icon:'fa-house'},
+  {id:'escolha', label:'Escolha seu caminho', icon:'fa-signs-post'},
+  {id:'modulos', label:'Grade do curso',      icon:'fa-table-cells-large'}
+];
+
+/* ---- índice lateral: módulos recolhíveis ---- */
+function buildSidebar(){
+  sbList.innerHTML = '';
+
+  FIXOS.forEach(f=>{
+    const idx = firstSlideOf(f.id); if(idx === -1) return;
+    const li = document.createElement('li');
+    li.className = 'sb-item'; li.dataset.sec = f.id;
+    li.innerHTML = `<i class="fa-solid ${f.icon} sb-ico"></i><span class="sb-txt">${f.label}</span>`;
+    li.onclick = ()=>go(idx);
+    sbList.appendChild(li);
+  });
+
+  const sep = document.createElement('li');
+  sep.className = 'sb-sep'; sep.textContent = 'Módulos';
+  sbList.appendChild(sep);
+
+  MODULOS.forEach(mod=>{
+    const vistas = mod.aulas.filter((_,j)=>assistidas.has(mod.id+'-'+j)).length;
+    const grupo = document.createElement('li');
+    grupo.className = 'sb-group' + (abertos.has(mod.id) ? ' aberto' : '')
+                    + (vistas === mod.aulas.length ? ' completo' : '');
+    grupo.dataset.mod = mod.id;
+    grupo.innerHTML = `
+      <button class="sb-mod" type="button">
+        <i class="fa-solid fa-chevron-right chev"></i>
+        <i class="fa-solid ${mod.icon} mod-ico" style="color:${mod.cor}"></i>
+        <span class="mod-nome">${mod.nome}</span>
+        <span class="mod-qtd">${vistas}/${mod.aulas.length}</span>
+      </button>`;
+    grupo.querySelector('.sb-mod').onclick = ()=>{
+      abertos.has(mod.id) ? abertos.delete(mod.id) : abertos.add(mod.id);
+      grupo.classList.toggle('aberto');
+    };
+
+    const sub = document.createElement('ul');
+    sub.className = 'sb-sub';
+    mod.aulas.forEach((a,j)=>{
+      const idx = firstSlideOf(mod.id+'-'+j); if(idx === -1) return;
+      const li = document.createElement('li');
+      li.className = 'sb-item' + (assistidas.has(mod.id+'-'+j) ? ' visto' : '');
+      li.dataset.sec = mod.id+'-'+j;
+      li.title = a.rot + ' — ' + a.titulo;
+      li.innerHTML = `<span class="sb-n">${String(j+1).padStart(2,'0')}</span>` +
+                     `<span class="sb-txt">${a.titulo}</span>` +
+                     `<i class="fa-solid fa-circle-check sb-check"></i>`;
+      li.onclick = ()=>go(idx);
+      sub.appendChild(li);
+    });
+    const idxQ = firstSlideOf(mod.id+'-quiz');
+    if(idxQ !== -1){
+      const li = document.createElement('li');
+      li.className = 'sb-item'; li.dataset.sec = mod.id+'-quiz';
+      li.innerHTML = `<i class="fa-solid fa-circle-check sb-ico"></i><span class="sb-txt">Questionário do módulo</span>`;
+      li.onclick = ()=>go(idxQ);
+      sub.appendChild(li);
+    }
+    grupo.appendChild(sub);
+    sbList.appendChild(grupo);
+  });
+
+  const temFinal = firstSlideOf('quiz') !== -1 || firstSlideOf('cert') !== -1;
+  if(temFinal){
+    const sep2 = document.createElement('li');
+    sep2.className = 'sb-sep'; sep2.textContent = 'Conclusão';
+    sbList.appendChild(sep2);
+  }
+  [{id:'quiz', label:'Questionário final', icon:'fa-circle-check'},
+   {id:'cert', label:'Certificado',        icon:'fa-award'}].forEach(f=>{
+    const idx = firstSlideOf(f.id); if(idx === -1) return;
+    const li = document.createElement('li');
+    li.className = 'sb-item'; li.dataset.sec = f.id;
+    li.innerHTML = `<i class="fa-solid ${f.icon} sb-ico"></i><span class="sb-txt">${f.label}</span>`;
+    li.onclick = ()=>go(idx);
+    sbList.appendChild(li);
+  });
+}
+
+/* ---- grade de módulos ---- */
+function buildModGrid(){
+  const g = document.getElementById('modGrid');
+  g.innerHTML = '';
+  MODULOS.forEach(mod=>{
+    const idx = firstSlideOf(mod.id+'-0');
+    const vistas = mod.aulas.filter((_,j)=>assistidas.has(mod.id+'-'+j)).length;
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'mod-card';
+    b.innerHTML = `
+      <div class="mc-ico" style="background:${mod.cor}"><i class="fa-solid ${mod.icon}"></i></div>
+      <span class="mc-kick">${mod.kick}</span>
+      <h3>${mod.nome}</h3>
+      <div class="mc-qtd"><i class="fa-regular fa-circle-play"></i>
+        ${mod.aulas.length} ${mod.aulas.length===1?'aula':'aulas'}
+        ${vistas ? `<span class="done">· ${vistas} vista${vistas>1?'s':''}</span>` : ''}</div>`;
+    if(idx !== -1) b.onclick = ()=>{ abertos.add(mod.id); buildSidebar(); go(firstSlideOf(mod.id+'-0')); };
+    g.appendChild(b);
+  });
+}
+
+/* ---- questionários ---- */
+/* ---- embaralhamento do questionário ----
+   Roda uma vez a cada abertura do documento: sorteia a ordem das perguntas
+   e, dentro de cada pergunta, a ordem das alternativas. Impede que alguém
+   decore a posição da resposta certa repetindo a avaliação.               */
+function embaralhar(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+function embaralharQuestionarios(){
+  Object.keys(QUIZZES).forEach(k=>{
+    embaralhar(QUIZZES[k]);
+    QUIZZES[k].forEach(q=>{
+      const pares = q.opts.map((texto,i)=>({texto, certa: i === q.correct}));
+      embaralhar(pares);
+      q.opts = pares.map(p=>p.texto);
+      q.correct = pares.findIndex(p=>p.certa);
+    });
+  });
+}
+
+function buildQuizzes(){
+  document.querySelectorAll('[data-quiz]').forEach(wrap=>{
+    const sec = wrap.dataset.quiz;
+    const qs = QUIZZES[sec] || [];
+    wrap.innerHTML = '';
+    if(!qs.length){
+      wrap.innerHTML = `<div class="q-card" style="text-align:center;color:#94a3b8;font-weight:600">
+        Questionário em preparação.</div>`;
+      return;
+    }
+    qs.forEach((q,i)=>{
+      const card = document.createElement('div');
+      card.className = 'q-card';
+      card.innerHTML = `
+        <div class="q-top">
+          <span class="q-idx">Pergunta ${i+1}</span>
+          <span class="q-pts">${q.pts} pts</span>
+        </div>
+        <h4>${q.q}</h4>
+        <div class="q-opts">
+          ${q.opts.map((o,j)=>`<button class="q-opt" data-j="${j}">
+            <span class="letter">${'ABCD'[j]}</span><span>${o}</span></button>`).join('')}
+        </div>
+        <div class="q-fb"></div>`;
+      const fb = card.querySelector('.q-fb');
+      card.querySelectorAll('.q-opt').forEach(btn=>{
+        btn.onclick = ()=>{
+          const j = +btn.dataset.j, key = sec+'-'+i, ok = j === q.correct;
+          card.querySelectorAll('.q-opt').forEach(b=>{
+            b.disabled = true;
+            if(+b.dataset.j === q.correct) b.classList.add('right');
+          });
+          if(!ok) btn.classList.add('wrong');
+          answered[key] = ok ? q.pts : 0;
+          fb.className = 'q-fb show ' + (ok ? 'ok':'no');
+          fb.innerHTML = `<b>${ok ? 'Correto!' : 'Resposta correta: '+'ABCD'[q.correct]+'.'}</b> ${q.fb}`;
+          updateScore(); renderQuizResult(wrap, sec);
+        };
+      });
+      wrap.appendChild(card);
+    });
+    const res = document.createElement('div');
+    res.className = 'quiz-result'; res.style.display = 'none';
+    wrap.appendChild(res);
+  });
+}
+
+function renderQuizResult(wrap, sec){
+  const qs = QUIZZES[sec] || [];
+  const done = qs.filter((_,i)=>answered[sec+'-'+i] !== undefined).length;
+  const res = wrap.querySelector('.quiz-result');
+  if(!res || done < qs.length) return;
+  const got = qs.reduce((a,_,i)=>a+(answered[sec+'-'+i]||0),0);
+  const max = qs.reduce((a,q)=>a+q.pts,0);
+  const perc = Math.round(got/max*100);
+  res.style.display = 'flex';
+  res.innerHTML = `
+    <i class="fa-solid ${perc>=APROVACAO?'fa-circle-check':'fa-rotate-right'}"></i>
+    <div>
+      <h4>${perc>=APROVACAO?'Aproveitamento suficiente!':'Vale rever algumas aulas'}</h4>
+      <p>${perc>=APROVACAO
+          ? 'Siga para o certificado, no fim do menu.'
+          : 'Reveja as aulas antes de emitir o certificado.'}</p>
+    </div>
+    <div class="score"><b>${got}</b><span>de ${max} pontos</span></div>`;
+}
+
+function updateScore(){
+  const got = earnedPts(), max = totalPts();
+  const perc = max ? Math.round(got/max*100) : 0;
+  document.getElementById('sbScore').textContent = got+' / '+max;
+  document.getElementById('sbBar').style.width = perc+'%';
+  document.getElementById('cPerc').textContent = perc+'%';
+  document.getElementById('cPts').textContent  = got+' / '+max;
+  document.getElementById('sbAulas').textContent = assistidas.size+' / '+TOTAL_AULAS;
+  document.getElementById('sbBarAulas').style.width = (assistidas.size/TOTAL_AULAS*100)+'%';
+}
+
+/* ---- vídeos: capa clicável + embed sob demanda + link de escape ----
+   O embed do YouTube pode ser recusado (erro 153) quando a página é aberta
+   direto do disco (file://). A capa carrega o player só no clique e o link
+   abaixo garante o acesso em qualquer situação.                            */
+function mountVideos(){
+  document.querySelectorAll('.laptop-screen').forEach(scr=>{
+    const id = scr.dataset.yt;
+    if(!id){
+      scr.innerHTML = `<div class="yt-fallback"><i class="fa-brands fa-youtube"></i>
+        Link do vídeo não reconhecido</div>`;
+      return;
+    }
+    scr.innerHTML = `<button class="yt-poster" type="button" aria-label="Assistir à aula">
+        <img src="https://i.ytimg.com/vi/${id}/maxresdefault.jpg" alt=""
+             onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/${id}/hqdefault.jpg'">
+        <span class="yt-play"><i class="fa-solid fa-play"></i></span>
+        <span class="yt-hint">Clique para assistir</span>
+      </button>`;
+    scr.querySelector('.yt-poster').onclick = ()=>{
+      scr.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&autoplay=1"
+        title="Aula" referrerpolicy="strict-origin-when-cross-origin"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
+        allowfullscreen></iframe>`;
+      if(scr.dataset.aula){
+        assistidas.add(scr.dataset.aula);
+        buildSidebar(); buildModGrid(); updateScore(); marcarAtivo();
+      }
+    };
+    const stage = scr.closest('.video-stage');
+    if(stage && !stage.querySelector('.video-note')){
+      const a = document.createElement('a');
+      a.className = 'video-note';
+      a.href = 'https://www.youtube.com/watch?v='+id;
+      a.target = '_blank'; a.rel = 'noopener';
+      a.innerHTML = `<i class="fa-brands fa-youtube"></i>
+        Se o player não abrir aqui, assista direto no YouTube
+        <i class="fa-solid fa-arrow-up-right-from-square" style="color:inherit;font-size:11px"></i>`;
+      stage.appendChild(a);
+    }
+  });
+}
+
+/* ---- modo visual x completo ---- */
+function setModo(m, irPara){
+  modo = m;
+  const atual = deck[current];
+  deck = slides.filter(s => modo === 'completo' || s.dataset.mode !== 'completo');
+  slides.forEach(s => { if(!deck.includes(s)) s.classList.remove('active'); });
+
+  document.getElementById('sbScoreBox').style.display = (modo === 'completo') ? '' : 'none';
+  document.getElementById('sbMode').style.display     = (modo === 'completo') ? 'none' : 'flex';
+  document.querySelectorAll('.path-card').forEach(c =>
+    c.classList.toggle('escolhido', c.dataset.modo === modo));
+
+  buildSidebar(); buildModGrid();
+  go(irPara !== undefined ? irPara : Math.max(0, deck.indexOf(atual)));
+}
+document.querySelectorAll('.path-card').forEach(card=>{
+  card.onclick = ()=> setModo(card.dataset.modo, firstSlideOf('modulos'));
+});
+document.getElementById('sbSwitch').onclick = ()=> go(firstSlideOf('escolha'));
+
+/* ---- números da capa e do slide de escolha ---- */
+function buildNumeros(){
+  const set = (id,v)=>{ const el = document.getElementById(id); if(el) el.textContent = v; };
+  const mods = MODULOS.filter(m=>m.id.startsWith('m')).length;
+  set('coverMods', mods+' módulos'); set('coverAulas', TOTAL_AULAS+' aulas');
+  set('pAulas1', TOTAL_AULAS); set('pAulas2', TOTAL_AULAS);
+  set('pMods1', mods); set('pMods2', mods);
+  set('pQ', Object.values(QUIZZES).flat().length); set('pPontos', totalPts()); set('pMin', APROVACAO);
+}
+
+/* ---- navegação ---- */
+function marcarAtivo(){
+  const sec = secOf(current);
+  const mod = deck[current].dataset.mod;
+  if(mod && !abertos.has(mod)){ abertos.add(mod); buildSidebar(); }
+  sbList.querySelectorAll('.sb-item').forEach(li=>li.classList.toggle('active', li.dataset.sec===sec));
+  sbList.querySelectorAll('.sb-group').forEach(g=>g.classList.toggle('contem-ativo', g.dataset.mod===mod));
+  const at = sbList.querySelector('.sb-item.active');
+  if(at && at.scrollIntoView) at.scrollIntoView({block:'nearest'});
+}
+function go(i){
+  current = Math.max(0, Math.min(deck.length-1, i));
+  slides.forEach(s=>s.classList.remove('active'));
+  deck[current].classList.add('active');
+  marcarAtivo();
+  counter.textContent = (current+1)+' / '+deck.length;
+  topBar.style.width = ((current+1)/deck.length*100)+'%';
+  prevBtn.disabled = current===0;
+  nextBtn.disabled = current===deck.length-1;
+}
+prevBtn.onclick = ()=>go(current-1);
+nextBtn.onclick = ()=>go(current+1);
+document.addEventListener('keydown', e=>{
+  if(['INPUT','TEXTAREA'].includes(e.target.tagName)) return;
+  if(e.key==='ArrowRight'||e.key==='PageDown') go(current+1);
+  if(e.key==='ArrowLeft' ||e.key==='PageUp')   go(current-1);
+});
+
+/* ---- certificado ---- */
+document.getElementById('cGen').onclick = ()=>{
+  const nome = document.getElementById('cName').value.trim();
+  const mail = document.getElementById('cMail').value.trim();
+  const emp  = document.getElementById('cComp').value.trim();
+  const box  = document.getElementById('certificado');
+  if(!nome){
+    box.innerHTML = `<div class="cert-empty"><i class="fa-solid fa-user-pen"></i>
+      Informe seu nome completo para gerar o certificado</div>`;
+    return;
+  }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail)){
+    box.innerHTML = `<div class="cert-empty"><i class="fa-solid fa-envelope"></i>
+      Informe um e-mail válido — ele não aparece no certificado, mas é necessário para o registro</div>`;
+    return;
+  }
+  const got = earnedPts(), max = totalPts();
+  const perc = max ? Math.round(got/max*100) : 0;
+  if(perc < APROVACAO){
+    box.innerHTML = `<div class="cert-empty"><i class="fa-solid fa-circle-exclamation"></i>
+      Aproveitamento de ${perc}%. É necessário atingir ${APROVACAO}% dos pontos —
+      reveja as aulas e responda o questionário.</div>`;
+    return;
+  }
+  const hoje = new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+  const mods = MODULOS.filter(m=>m.id.startsWith('m')).length;
+  box.innerHTML = `
+    <img src="https://i.ibb.co/BHjm6dp2/logo-teams-espelhado.png" class="cert-logo">
+    <div class="cert-kicker">Certificado de conclusão</div>
+    <div class="cert-title">Curso Equipes Externas Turbinadas</div>
+    <div class="cert-to">Concedido a</div>
+    <div class="cert-name">${nome}</div>
+    <p class="cert-text">Concluiu o curso <b>Equipes Externas Turbinadas</b>,
+      composto por <b>${TOTAL_AULAS} aulas em vídeo</b> distribuídas em <b>${mods} módulos</b>${emp ? ', na condição de colaborador de <b>'+emp+'</b>' : ''},
+      com aproveitamento de <b>${perc}%</b> no questionário de avaliação.</p>
+    <div class="cert-meta">
+      <div><span>Aproveitamento</span><b>${perc}% · ${got}/${max} pts</b></div>
+      <div><span>Data de conclusão</span><b>${hoje}</b></div>
+    </div>`;
+
+  /* dados para a automação: no DOM e em window.CERTIFICADO */
+  window.CERTIFICADO = {
+    curso:'Equipes Externas Turbinadas',
+    nome, email: mail, empresa: emp,
+    pontos: got, total: max, percentual: perc,
+    aulas: TOTAL_AULAS, aulasAssistidas: assistidas.size, modulos: mods,
+    aprovado: true, data: hoje, emitidoEm: new Date().toISOString()
+  };
+  Object.entries({
+    curso:'Equipes Externas Turbinadas',
+    nome, email: mail, empresa: emp,
+    pontos: got, total: max, percentual: perc, emitidoEm: window.CERTIFICADO.emitidoEm
+  }).forEach(([k,v])=>box.dataset[k] = v);
+};
+document.getElementById('cPrint').onclick = ()=>window.print();
+
+/* ---- boot ---- */
+embaralharQuestionarios(); buildQuizzes(); mountVideos(); buildNumeros(); updateScore();
+setModo('completo', 0);
+</script>
+</body>
+</html>
